@@ -162,6 +162,10 @@ footer .logo{justify-content:center;margin-bottom:8px}
 .guardar{background:var(--oro);color:#2a1a05}.cancelar{background:rgba(255,255,255,.1);color:var(--crema)}
 #toast{position:fixed;left:50%;bottom:30px;transform:translateX(-50%) translateY(80px);background:var(--oro);color:#2a1a05;padding:10px 22px;border-radius:99px;z-index:200;transition:.3s;font-weight:500}
 #toast.on{transform:translateX(-50%)}
+/* Panel del pedido: todo el contenido se desplaza (así los campos no quedan tapados por el teclado) */
+#drawer{overflow-y:auto;-webkit-overflow-scrolling:touch}
+#drawer .items{flex:none;min-height:90px;overflow:visible}
+.pie input{font-size:16px}  /* 16px evita el zoom automático de iPhone al escribir */
 </style>
 </head>
 <body>
@@ -331,16 +335,27 @@ function pintarCarrito(){
 function validarPedido(){
  const n=Object.values(carrito).reduce((s,x)=>s+x,0);
  const faltan=[["nombre","tu nombre"],["ciudad","la ciudad"],["barrio","el barrio"],["direccion","la dirección"]].filter(([id])=>!$("#"+id).value.trim()).map(([,t])=>t);
- $("#pedir").disabled=!(n&&!faltan.length);
+ $("#pedir").disabled=!n;                       // solo se apaga si el pedido está vacío; los datos se revisan al pulsar
  $("#ayuda").textContent=!n?"Agrega al menos una caja a tu pedido.":faltan.length?"Falta: "+faltan.join(", ")+".":"";
+ ["nombre","ciudad","barrio","direccion"].forEach(id=>$("#"+id).style.borderColor="");
+ return faltan.length;
 }
-["nombre","ciudad","barrio","direccion"].forEach(id=>$("#"+id).addEventListener("input",validarPedido));
+["nombre","ciudad","barrio","direccion"].forEach(id=>["input","change","blur","keyup"].forEach(ev=>$("#"+id).addEventListener(ev,validarPedido)));
 function mensaje(){
  const ids=Object.keys(carrito),t=ids.reduce((s,i)=>s+carrito[i]*precioDe(i),0);
  const lin=ids.map(i=>{const p=datos.find(x=>x.id==i);return `• ${carrito[i]} × ${p.nombre} (${p.contenido}) — ${cop(carrito[i]*p.precio)}`}).join("\n");
  return `Hola 🕯️, quiero hacer un pedido para el Día de las Velitas en ${MARCA}:\n${lin}\n*Total: ${cop(t)}*\n\n*Datos de entrega*\nNombre: ${$("#nombre").value.trim()}\nCiudad: ${$("#ciudad").value.trim()}\nBarrio: ${$("#barrio").value.trim()}\nDirección: ${$("#direccion").value.trim()}`;
 }
-$("#pedir").onclick=()=>window.open(`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(mensaje())}`,"_blank");
+$("#pedir").onclick=()=>{
+ // Revisa los datos justo al pulsar (funciona aunque el celular haya autocompletado sin avisar)
+ if(validarPedido()){
+  const vacio=["nombre","ciudad","barrio","direccion"].map(id=>$("#"+id)).filter(e=>!e.value.trim());
+  vacio.forEach(e=>e.style.borderColor="#ff9b8a");
+  vacio[0].focus();return;
+ }
+ const url=`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(mensaje())}`;
+ if(!window.open(url,"_blank"))location.href=url;
+};
 $("#waFlot").href=`https://wa.me/${WHATSAPP}?text=${encodeURIComponent("Hola 🕯️, quiero información de las velitas del 7 de diciembre")}`;
 
 /* Paneles */
@@ -412,6 +427,12 @@ function admForm(id){
 /* Reduce la foto a máx. 900 px para que pese poco */
 function reducir(file){return new Promise(res=>{const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const k=Math.min(1,900/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=im.width*k;c.height=im.height*k;c.getContext("2d").drawImage(im,0,0,c.width,c.height);res(c.toDataURL("image/jpeg",.8))};im.src=r.result};r.readAsDataURL(file)})}
 
+/* Celulares: el panel se ajusta al teclado y el campo enfocado se desplaza a la vista */
+if(window.visualViewport){
+ const vv=visualViewport,ajustar=()=>document.querySelectorAll(".drawer").forEach(d=>{d.style.height=vv.height+"px";d.style.top=vv.offsetTop+"px"});
+ vv.addEventListener("resize",ajustar);vv.addEventListener("scroll",ajustar);ajustar();
+}
+document.addEventListener("focusin",e=>{if(e.target.matches(".pie input"))setTimeout(()=>e.target.scrollIntoView({block:"center",behavior:"smooth"}),300)});
 cargarCatalogo();
 </script>
 </body>

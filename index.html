@@ -228,7 +228,7 @@ footer .logo{justify-content:center;margin-bottom:8px}
   <div class="logo"><img class="avatar" src="img/logo.jpg" alt="" onerror="this.style.display='none'">La Gata Siamesa</div>
   <p>Velas artesanales para el 7 de diciembre · Tu ciudad, Colombia</p>
   <div class="redes"><a href="https://wa.me/573133827165" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.instagram.com/la.gata.siamesa" target="_blank" rel="noopener">@la.gata.siamesa</a></div>
-  <p style="opacity:.4;font-size:.75rem;margin-top:10px">versión 2026-11-11 v5</p>
+  <p style="opacity:.4;font-size:.75rem;margin-top:10px">versión 2026-11-11 v6</p>
   <button class="admin-link" id="abrirAdmin">Administrar</button>
  </div>
 </footer>
@@ -248,7 +248,7 @@ footer .logo{justify-content:center;margin-bottom:8px}
   <input id="barrio" placeholder="Barrio">
   <input id="direccion" placeholder="Dirección (calle / carrera, casa o apto)" autocomplete="street-address">
   <div id="ayuda" style="font-size:.82rem;color:var(--oro);min-height:1.2em"></div>
-  <button class="pedir" id="pedir">💬 Pedir por WhatsApp</button>
+  <a class="pedir" id="pedir" href="#" target="_blank" rel="noopener" style="display:none;text-align:center;text-decoration:none">💬 Pedir por WhatsApp</a>
  </div>
 </aside>
 
@@ -336,30 +336,20 @@ function pintarCarrito(){
 function validarPedido(){
  const n=Object.values(carrito).reduce((s,x)=>s+x,0);
  const faltan=[["nombre","tu nombre"],["ciudad","la ciudad"],["barrio","el barrio"],["direccion","la dirección"]].filter(([id])=>!$("#"+id).value.trim()).map(([,t])=>t);
- $("#pedir").disabled=false;                    // el botón nunca se apaga: al pulsarlo se revisa qué falta
- $("#ayuda").textContent=!n?"Agrega al menos una caja a tu pedido.":faltan.length?"Falta: "+faltan.join(", ")+".":"";
- ["nombre","ciudad","barrio","direccion"].forEach(id=>$("#"+id).style.borderColor="");
- return !n?1:faltan.length;
+ const listo=n>0&&!faltan.length;
+ $("#ayuda").textContent=!n?"Agrega al menos una caja a tu pedido.":faltan.length?"Para pedir, completa: "+faltan.join(", ")+".":"";
+ const b=$("#pedir");
+ b.style.display=listo?"block":"none";            // el botón solo aparece con el pedido y los 4 datos completos
+ if(listo)b.href=`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(mensaje())}`;   // enlace directo a WhatsApp
+ return !listo;
 }
-["nombre","ciudad","barrio","direccion"].forEach(id=>["input","change","blur","keyup"].forEach(ev=>$("#"+id).addEventListener(ev,validarPedido)));
+["nombre","ciudad","barrio","direccion"].forEach(id=>["input","change","blur","keyup","paste","focus"].forEach(ev=>$("#"+id).addEventListener(ev,validarPedido)));
+setInterval(validarPedido,500);                    // detecta también el autocompletado del celular, que no avisa
 function mensaje(){
  const ids=Object.keys(carrito),t=ids.reduce((s,i)=>s+carrito[i]*precioDe(i),0);
  const lin=ids.map(i=>{const p=datos.find(x=>x.id==i);return `• ${carrito[i]} × ${p.nombre} (${p.contenido}) — ${cop(carrito[i]*p.precio)}`}).join("\n");
  return `Hola 🕯️, quiero hacer un pedido para el Día de las Velitas en ${MARCA}:\n${lin}\n*Total: ${cop(t)}*\n\n*Datos de entrega*\nNombre: ${$("#nombre").value.trim()}\nCiudad: ${$("#ciudad").value.trim()}\nBarrio: ${$("#barrio").value.trim()}\nDirección: ${$("#direccion").value.trim()}`;
 }
-$("#pedir").onclick=()=>{
- // Revisa los datos justo al pulsar (funciona aunque el celular haya autocompletado sin avisar)
- try{
-  if(validarPedido()){
-   const vacio=["nombre","ciudad","barrio","direccion"].map(id=>$("#"+id)).filter(e=>!e.value.trim());
-   vacio.forEach(e=>e.style.borderColor="#ff9b8a");
-   if(vacio[0])vacio[0].focus();
-   return;
-  }
-  const url=`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(mensaje())}`;
-  if(!window.open(url,"_blank"))location.href=url;
- }catch(err){$("#ayuda").textContent="Error: "+err.message}
-};
 $("#waFlot").href=`https://wa.me/${WHATSAPP}?text=${encodeURIComponent("Hola 🕯️, quiero información de las velitas del 7 de diciembre")}`;
 
 /* Paneles */

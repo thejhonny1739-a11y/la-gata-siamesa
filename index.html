@@ -228,6 +228,7 @@ footer .logo{justify-content:center;margin-bottom:8px}
   <div class="logo"><img class="avatar" src="img/logo.jpg" alt="" onerror="this.style.display='none'">La Gata Siamesa</div>
   <p>Velas artesanales para el 7 de diciembre · Tu ciudad, Colombia</p>
   <div class="redes"><a href="https://wa.me/573133827165" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.instagram.com/la.gata.siamesa" target="_blank" rel="noopener">@la.gata.siamesa</a></div>
+  <p style="opacity:.4;font-size:.75rem;margin-top:10px">versión 2026-11-11 v5</p>
   <button class="admin-link" id="abrirAdmin">Administrar</button>
  </div>
 </footer>
@@ -247,7 +248,7 @@ footer .logo{justify-content:center;margin-bottom:8px}
   <input id="barrio" placeholder="Barrio">
   <input id="direccion" placeholder="Dirección (calle / carrera, casa o apto)" autocomplete="street-address">
   <div id="ayuda" style="font-size:.82rem;color:var(--oro);min-height:1.2em"></div>
-  <button class="pedir" id="pedir" disabled>💬 Pedir por WhatsApp</button>
+  <button class="pedir" id="pedir">💬 Pedir por WhatsApp</button>
  </div>
 </aside>
 
@@ -335,10 +336,10 @@ function pintarCarrito(){
 function validarPedido(){
  const n=Object.values(carrito).reduce((s,x)=>s+x,0);
  const faltan=[["nombre","tu nombre"],["ciudad","la ciudad"],["barrio","el barrio"],["direccion","la dirección"]].filter(([id])=>!$("#"+id).value.trim()).map(([,t])=>t);
- $("#pedir").disabled=!n;                       // solo se apaga si el pedido está vacío; los datos se revisan al pulsar
+ $("#pedir").disabled=false;                    // el botón nunca se apaga: al pulsarlo se revisa qué falta
  $("#ayuda").textContent=!n?"Agrega al menos una caja a tu pedido.":faltan.length?"Falta: "+faltan.join(", ")+".":"";
  ["nombre","ciudad","barrio","direccion"].forEach(id=>$("#"+id).style.borderColor="");
- return faltan.length;
+ return !n?1:faltan.length;
 }
 ["nombre","ciudad","barrio","direccion"].forEach(id=>["input","change","blur","keyup"].forEach(ev=>$("#"+id).addEventListener(ev,validarPedido)));
 function mensaje(){
@@ -348,13 +349,16 @@ function mensaje(){
 }
 $("#pedir").onclick=()=>{
  // Revisa los datos justo al pulsar (funciona aunque el celular haya autocompletado sin avisar)
- if(validarPedido()){
-  const vacio=["nombre","ciudad","barrio","direccion"].map(id=>$("#"+id)).filter(e=>!e.value.trim());
-  vacio.forEach(e=>e.style.borderColor="#ff9b8a");
-  vacio[0].focus();return;
- }
- const url=`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(mensaje())}`;
- if(!window.open(url,"_blank"))location.href=url;
+ try{
+  if(validarPedido()){
+   const vacio=["nombre","ciudad","barrio","direccion"].map(id=>$("#"+id)).filter(e=>!e.value.trim());
+   vacio.forEach(e=>e.style.borderColor="#ff9b8a");
+   if(vacio[0])vacio[0].focus();
+   return;
+  }
+  const url=`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(mensaje())}`;
+  if(!window.open(url,"_blank"))location.href=url;
+ }catch(err){$("#ayuda").textContent="Error: "+err.message}
 };
 $("#waFlot").href=`https://wa.me/${WHATSAPP}?text=${encodeURIComponent("Hola 🕯️, quiero información de las velitas del 7 de diciembre")}`;
 

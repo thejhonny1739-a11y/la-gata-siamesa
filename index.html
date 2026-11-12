@@ -1,0 +1,387 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>La Gata Siamesa — Velas Velas</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Jost:wght@300;400;500&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --noche:#170a0d; --noche2:#2a1015; --oro:#E0A93B; --llama:#E8893A; --crema:#FFF4DD;
+  --cera:#FBE7B5; --rojo:#9E2A2B; --verde:#1F4D3A; --texto:#FFF4DD; --suave:rgba(255,244,221,.72);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Jost',sans-serif;background:var(--noche);color:var(--texto);line-height:1.6;overflow-x:hidden}
+h1,h2,h3{font-family:'Cormorant Garamond',serif;font-weight:600;line-height:1.12}
+.hand{font-family:'Caveat',cursive;color:var(--oro);font-size:1.5rem}
+.wrap{max-width:1100px;margin:0 auto;padding:0 20px}
+a{color:inherit;text-decoration:none}
+button{font:inherit;cursor:pointer;border:0}
+.aviso{background:var(--oro);color:#2a1a05;text-align:center;font-size:.82rem;padding:6px}
+
+/* Estrellas de fondo */
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+ background:
+ radial-gradient(1.5px 1.5px at 12% 18%,#fff8 50%,transparent),radial-gradient(1.5px 1.5px at 30% 60%,#fff6 50%,transparent),
+ radial-gradient(2px 2px at 55% 22%,#fff9 50%,transparent),radial-gradient(1.5px 1.5px at 72% 70%,#fff7 50%,transparent),
+ radial-gradient(1.5px 1.5px at 88% 35%,#fff8 50%,transparent),radial-gradient(1px 1px at 20% 85%,#fff6 50%,transparent),
+ radial-gradient(1.5px 1.5px at 95% 90%,#fff6 50%,transparent),radial-gradient(1px 1px at 45% 8%,#fff7 50%,transparent),
+ linear-gradient(180deg,#120709,#2a1015 60%,#3d1a16)}
+
+/* Barra */
+header.top{position:sticky;top:0;z-index:50;background:rgba(23,10,13,.9);backdrop-filter:blur(8px);border-bottom:1px solid rgba(244,185,66,.18)}
+.nav{display:flex;align-items:center;justify-content:space-between;height:80px}
+.avatar{width:50px;height:50px;border-radius:50%;object-fit:cover;border:2px solid var(--oro);box-shadow:0 0 14px rgba(224,169,59,.35)}.logo{display:flex;align-items:center;gap:12px;font-family:'Cormorant Garamond',serif;font-size:2.15rem;letter-spacing:.01em;font-weight:700;color:var(--oro)}
+.flame{width:14px;height:22px;animation:flick 2.4s ease-in-out infinite;transform-origin:50% 100%;filter:drop-shadow(0 0 6px #ffb347)}
+@keyframes flick{0%,100%{transform:scale(1) rotate(-1deg)}30%{transform:scale(1.1,.93) rotate(2deg)}60%{transform:scale(.94,1.07) rotate(-2deg)}}
+nav ul{display:flex;gap:26px;list-style:none;font-size:.95rem}
+nav a:hover{color:var(--oro)}
+.cart-btn{background:var(--oro);color:#2a1a05;padding:9px 18px;border-radius:99px;font-size:.9rem;font-weight:500;display:flex;gap:8px;align-items:center}
+.cart-btn b{background:#2a1a05;color:var(--oro);border-radius:99px;min-width:22px;height:22px;display:grid;place-items:center;font-size:.8rem}
+@media(max-width:700px){nav ul{display:none}.logo{font-size:1.5rem}.avatar{width:40px;height:40px}.cart-btn{padding:8px 12px}}
+
+/* Hero */
+.hero{position:relative;text-align:center;padding:80px 0 70px;overflow:hidden}
+.hero::after{content:"";position:absolute;left:50%;bottom:-160px;width:900px;height:420px;transform:translateX(-50%);
+  background:radial-gradient(ellipse,rgba(255,155,61,.35),transparent 65%);pointer-events:none}
+.faroles{display:flex;justify-content:center;gap:clamp(14px,4vw,46px);margin-bottom:26px}
+.farol{width:30px;height:46px;position:relative;animation:flick 3s ease-in-out infinite}
+.farol:nth-child(2){animation-delay:.5s}.farol:nth-child(3){animation-delay:1s}.farol:nth-child(4){animation-delay:1.5s}.farol:nth-child(5){animation-delay:.8s}
+.farol svg{width:100%;height:100%}
+.hero h1{font-size:clamp(2.6rem,7.5vw,5.2rem);font-weight:500;margin:6px 0 16px}
+.hero h1 em{color:var(--oro);font-style:italic}
+.hero p.sub{max-width:540px;margin:0 auto 28px;color:var(--suave);font-weight:300;font-size:1.1rem}
+.btn{display:inline-block;background:linear-gradient(135deg,var(--oro),var(--llama));color:#2a1a05;padding:14px 34px;border-radius:99px;font-weight:500;transition:.25s;box-shadow:0 6px 24px rgba(255,155,61,.35)}
+.btn:hover{transform:translateY(-2px)}
+.btn.ghost{background:none;border:1px solid var(--oro);color:var(--oro);box-shadow:none;margin-left:10px}
+
+/* Cuenta regresiva */
+.cuenta{display:flex;justify-content:center;gap:14px;margin:40px 0 0;position:relative;z-index:1}
+.cuenta div{background:rgba(255,244,221,.06);border:1px solid rgba(244,185,66,.25);border-radius:14px;padding:12px 6px;min-width:76px}
+.cuenta b{display:block;font-family:'Cormorant Garamond',serif;font-size:2.1rem;color:var(--oro);line-height:1}
+.cuenta small{font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;opacity:.7}
+.cuenta-t{margin-top:30px;position:relative;z-index:1}
+
+section{padding:76px 0}
+.titulo{text-align:center;margin-bottom:42px}
+.titulo h2{font-size:clamp(2rem,4.6vw,3.1rem)}
+.titulo p{color:var(--suave);max-width:520px;margin:10px auto 0}
+
+/* Tradición */
+.trad{background:rgba(255,244,221,.04)}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:26px}
+.valor{text-align:center;padding:10px}
+.valor .ic{width:62px;height:62px;margin:0 auto 12px;border-radius:50%;background:rgba(244,185,66,.12);display:grid;place-items:center;font-size:1.7rem}
+.valor h3{font-size:1.5rem;margin-bottom:6px;color:var(--cera)}
+.valor p{color:var(--suave);font-size:.95rem}
+@media(max-width:760px){.grid3{grid-template-columns:1fr}}
+
+/* Catálogo */
+.productos{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:30px;max-width:1100px;margin:0 auto}
+.card{background:linear-gradient(180deg,#3a1a1e,#260f13);border:1px solid rgba(244,185,66,.2);border-radius:20px;overflow:hidden;box-shadow:0 10px 36px rgba(0,0,0,.4);transition:.3s;display:flex;flex-direction:column}
+.card:hover{transform:translateY(-6px);box-shadow:0 16px 44px rgba(255,155,61,.18)}
+.foto{position:relative;aspect-ratio:5/4;display:grid;place-items:center;overflow:hidden;background:radial-gradient(circle at 50% 70%,#6b3d1e,#2a1214)}
+.foto img{width:100%;height:100%;object-fit:cover}
+.foto svg.ph{width:50%}
+.foto .nav-f{position:absolute;top:50%;transform:translateY(-50%);background:rgba(23,10,13,.6);color:#fff;width:34px;height:34px;border-radius:50%;font-size:1.1rem}
+.foto .prev{left:10px}.foto .next{right:10px}
+.dots{position:absolute;bottom:10px;left:0;right:0;display:flex;gap:6px;justify-content:center}
+.dots i{width:7px;height:7px;border-radius:50%;background:#fff6}.dots i.on{background:var(--oro)}
+.tag{position:absolute;top:14px;left:14px;background:var(--oro);color:#2a1a05;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;padding:4px 12px;border-radius:99px;font-weight:500}
+.info{padding:20px 22px 24px;display:flex;flex-direction:column;gap:6px;flex:1}
+.info h3{font-size:1.65rem;color:var(--cera)}
+.info .cont{color:var(--oro);font-size:.85rem;letter-spacing:.06em;text-transform:uppercase}
+.info p{font-size:.94rem;color:var(--suave);flex:1}
+.precio{font-family:'Cormorant Garamond',serif;font-size:1.9rem;color:var(--oro);font-weight:700}
+.acciones{display:flex;gap:10px;align-items:center;margin-top:6px}
+.qty{display:flex;align-items:center;border:1px solid rgba(244,185,66,.35);border-radius:99px}
+.qty button{background:none;width:32px;height:34px;font-size:1.1rem;color:var(--crema)}
+.qty span{min-width:22px;text-align:center}
+.add{flex:1;background:var(--oro);color:#2a1a05;padding:10px;border-radius:99px;font-weight:500;transition:.2s}
+.add:hover{background:var(--llama)}
+.vacio-cat{text-align:center;color:var(--suave);padding:40px 0}
+
+/* Cómo pedir */
+.pasos{counter-reset:p}
+.paso{text-align:center}
+.paso::before{counter-increment:p;content:counter(p);display:grid;place-items:center;width:52px;height:52px;margin:0 auto 12px;border-radius:50%;border:1.5px solid var(--oro);font-family:'Cormorant Garamond',serif;font-size:1.6rem;color:var(--oro)}
+.paso h3{font-size:1.4rem;margin-bottom:4px;color:var(--cera)}
+.paso p{color:var(--suave);font-size:.95rem}
+
+footer{background:#0e0506;padding:44px 0 90px;text-align:center;color:var(--suave)}
+footer .logo{justify-content:center;margin-bottom:8px}
+.redes{display:flex;gap:18px;justify-content:center;margin:14px 0}
+.redes a{border-bottom:1px solid var(--oro)}
+.admin-link{background:none;color:rgba(255,244,221,.35);font-size:.8rem;margin-top:12px;text-decoration:underline}
+
+.wa{position:fixed;right:20px;bottom:20px;z-index:60;background:#25D366;width:58px;height:58px;border-radius:50%;display:grid;place-items:center;box-shadow:0 6px 20px rgba(0,0,0,.4);font-size:1.7rem}
+
+/* Paneles laterales */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.65);opacity:0;pointer-events:none;transition:.3s;z-index:80}
+.overlay.on{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;height:100%;width:min(430px,100%);background:#24100f;z-index:90;transform:translateX(100%);transition:.35s;display:flex;flex-direction:column;border-left:1px solid rgba(244,185,66,.25)}
+.drawer.on{transform:none}
+.drawer .hd{padding:18px 22px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(244,185,66,.15)}
+.drawer h2{font-size:1.8rem;color:var(--oro)}
+.x{background:none;font-size:1.7rem;color:var(--crema)}
+.items{flex:1;overflow:auto;padding:14px 22px}
+.item{display:flex;justify-content:space-between;gap:10px;padding:12px 0;border-bottom:1px dashed rgba(244,185,66,.2)}
+.item small{opacity:.65;display:block}
+.vacio{text-align:center;opacity:.6;padding:40px 0}
+.pie{padding:18px 22px;border-top:1px solid rgba(244,185,66,.2);display:grid;gap:10px;background:#1a0b0d}
+.pie input,.f input,.f textarea,.f select{padding:11px 14px;border:1px solid rgba(244,185,66,.3);border-radius:10px;font:inherit;background:#150809;color:var(--crema);width:100%}
+.total{display:flex;justify-content:space-between;font-family:'Cormorant Garamond',serif;font-size:1.7rem;font-weight:700;color:var(--oro)}
+.pedir{background:#25D366;color:#073b1b;padding:14px;border-radius:99px;font-weight:500}
+.pedir:disabled{opacity:.4;cursor:not-allowed}
+
+/* ===== ADMIN ===== */
+.admin{width:min(560px,100%)}
+.adm-body{flex:1;overflow:auto;padding:18px 22px}
+.nota{background:rgba(244,185,66,.1);border:1px solid rgba(244,185,66,.3);border-radius:10px;padding:10px 14px;font-size:.85rem;margin-bottom:16px;color:var(--cera)}
+.arow{display:flex;gap:12px;align-items:center;padding:12px;border:1px solid rgba(244,185,66,.2);border-radius:14px;margin-bottom:10px;background:#1a0b0d}
+.arow .mini{width:58px;height:58px;border-radius:10px;background:#4a2528 center/cover;flex-shrink:0;display:grid;place-items:center;font-size:1.5rem}
+.arow .t{flex:1;min-width:0}.arow .t b{display:block;font-family:'Cormorant Garamond',serif;font-size:1.2rem}
+.arow .t small{opacity:.7}
+.estado{font-size:.72rem;padding:2px 10px;border-radius:99px;font-weight:500}
+.estado.si{background:#2f7d46;color:#fff}.estado.no{background:#6b5a3a;color:#fff}
+.sm{background:rgba(244,185,66,.15);color:var(--crema);padding:6px 12px;border-radius:99px;font-size:.8rem}
+.sm:hover{background:rgba(244,185,66,.3)}.sm.del{color:#ff9b8a}
+.btn-add{width:100%;background:var(--oro);color:#2a1a05;padding:13px;border-radius:99px;font-weight:500;margin-bottom:18px}
+.f{display:grid;gap:12px}
+.f label{font-size:.85rem;color:var(--cera);display:grid;gap:4px}
+.f .dos{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.fotos{display:flex;gap:8px;flex-wrap:wrap}
+.fotos .ft{position:relative;width:78px;height:78px;border-radius:10px;background:center/cover;border:1px solid rgba(244,185,66,.3)}
+.fotos .ft button{position:absolute;top:-6px;right:-6px;background:#c8553d;color:#fff;border-radius:50%;width:22px;height:22px;font-size:.8rem}
+.subir{width:78px;height:78px;border:1.5px dashed var(--oro);border-radius:10px;display:grid;place-items:center;color:var(--oro);font-size:1.6rem;background:none}
+.sw{display:flex;align-items:center;gap:10px;font-size:.95rem;color:var(--crema)}
+.sw input{width:auto}
+.acc2{display:flex;gap:10px;margin-top:6px}
+.acc2 button{flex:1;padding:12px;border-radius:99px;font-weight:500}
+.guardar{background:var(--oro);color:#2a1a05}.cancelar{background:rgba(255,255,255,.1);color:var(--crema)}
+#toast{position:fixed;left:50%;bottom:30px;transform:translateX(-50%) translateY(80px);background:var(--oro);color:#2a1a05;padding:10px 22px;border-radius:99px;z-index:200;transition:.3s;font-weight:500}
+#toast.on{transform:translateX(-50%)}
+</style>
+</head>
+<body>
+
+<header class="top">
+ <div class="wrap nav">
+  <a href="#inicio" class="logo">
+   <img class="avatar" src="img/logo.jpg" alt="La Gata Siamesa" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><svg class="flame" viewBox="0 0 28 26" style="width:34px;height:32px;display:none"><path d="M3 2l6 5a11 11 0 0 1 10 0l6-5v13a11 11 0 0 1-22 0z" fill="#E0A93B"/><path d="M5 5l3.5 3a11 11 0 0 0-3.5 7z" fill="#170a0d" opacity=".25"/><ellipse cx="10" cy="14" rx="1.8" ry="2.4" fill="#170a0d"/><ellipse cx="18" cy="14" rx="1.8" ry="2.4" fill="#170a0d"/><path d="M13 18h2l-1 1.4z" fill="#170a0d"/></svg>
+   La Gata Siamesa
+  </a>
+  <nav><ul><li><a href="#velitas">Velas</a></li><li><a href="#tradicion">La tradición</a></li><li><a href="#pedir">Cómo pedir</a></li></ul></nav>
+  <button class="cart-btn" id="abrirCarrito">🛒 Pedido <b id="cnt">0</b></button>
+ </div>
+</header>
+
+<section class="hero" id="inicio">
+ <div class="wrap">
+  <div class="faroles" id="faroles"></div>
+  <div class="hand">Velas navideñas hechas a mano · Noche de Velitas</div>
+  <h1>Ilumina tu <em>noche de velitas</em> con velas únicas, hechas a mano</h1>
+  <p class="sub">Personajes navideños y velas de deseos para encender con tu familia el 7 de diciembre. Elige tu caja y pídela por WhatsApp.</p>
+  <a href="#velitas" class="btn">Ver velitas</a><a href="#pedir" class="btn ghost">Cómo pedir</a>
+  <div class="hand cuenta-t" id="cuentaT">Faltan para la noche de velitas</div>
+  <div class="cuenta" id="cuenta"></div>
+ </div>
+</section>
+
+<section class="trad" id="tradicion">
+ <div class="wrap">
+  <div class="titulo"><h2>Una noche para encender la esperanza</h2><p>El 7 de diciembre Colombia se llena de luz para dar inicio a la Navidad.</p></div>
+  <div class="grid3">
+   <div class="valor"><div class="ic">🕯️</div><h3>En familia</h3><p>Se encienden velitas en andenes, balcones y ventanas.</p></div>
+   <div class="valor"><div class="ic">🏮</div><h3>Con faroles</h3><p>Los faroles de colores acompañan la velada hasta tarde.</p></div>
+   <div class="valor"><div class="ic">🙏</div><h3>Con gratitud</h3><p>Cada llama lleva un deseo, un recuerdo o una oración.</p></div>
+  </div>
+ </div>
+</section>
+
+<section id="velitas">
+ <div class="wrap">
+  <div class="titulo"><div class="hand">elige tu paquete</div><h2>Nuestras velas</h2></div>
+  <div class="productos" id="productos"></div>
+ </div>
+</section>
+
+<section class="trad" id="pedir">
+ <div class="wrap">
+  <div class="titulo"><h2>Cómo pedir</h2></div>
+  <div class="grid3 pasos">
+   <div class="paso"><h3>Elige</h3><p>Agrega los paquetes que quieras a tu pedido.</p></div>
+   <div class="paso"><h3>Envía por WhatsApp</h3><p>Un clic y tu pedido llega listo a mi chat.</p></div>
+   <div class="paso"><h3>Confirmamos</h3><p>Acordamos pago y entrega antes del 7 de diciembre.</p></div>
+  </div>
+ </div>
+</section>
+
+<section id="insta" style="text-align:center"><div class="wrap"><div class="hand">síguenos</div><h2 style="font-size:clamp(1.8rem,4vw,2.6rem);margin:6px 0 12px">Mira más fotos en Instagram</h2><p style="color:var(--suave);margin-bottom:22px">Novedades, nuevos diseños y velas del día en <b>@la.gata.siamesa</b></p><a class="btn" href="https://www.instagram.com/la.gata.siamesa" target="_blank" rel="noopener">Abrir Instagram</a></div></section>
+<footer>
+ <div class="wrap">
+  <div class="logo"><img class="avatar" src="img/logo.jpg" alt="" onerror="this.style.display='none'">La Gata Siamesa</div>
+  <p>Velas artesanales para el 7 de diciembre · Tu ciudad, Colombia</p>
+  <div class="redes"><a href="#">WhatsApp</a><a href="https://www.instagram.com/la.gata.siamesa" target="_blank" rel="noopener">@la.gata.siamesa</a></div>
+  <button class="admin-link" id="abrirAdmin">Administrar</button>
+ </div>
+</footer>
+
+<a class="wa" id="waFlot" target="_blank" rel="noopener" aria-label="WhatsApp">💬</a>
+<div id="toast"></div>
+<div class="overlay" id="overlay"></div>
+
+<!-- Carrito -->
+<aside class="drawer" id="drawer">
+ <div class="hd"><h2>Tu pedido</h2><button class="x" data-cerrar>×</button></div>
+ <div class="items" id="items"></div>
+ <div class="pie">
+  <div class="total"><span>Total</span><span id="total">$0</span></div>
+  <input id="nombre" placeholder="Tu nombre"><input id="ciudad" placeholder="Tu ciudad / barrio">
+  <button class="pedir" id="pedir" disabled>💬 Pedir por WhatsApp</button>
+ </div>
+</aside>
+
+<!-- Admin -->
+<aside class="drawer admin" id="admin">
+ <div class="hd"><h2 id="admT">Administrar velitas</h2><button class="x" data-cerrar>×</button></div>
+ <div class="adm-body" id="admBody"></div>
+</aside>
+
+<script>
+/* ===== CONFIG (luego saldrá del panel) ===== */
+const WHATSAPP="573133827165", MARCA="La Gata Siamesa", CLAVE="velitas";
+const FECHA=new Date("2026-12-07T18:00:00-05:00");
+const KEY="velitas_v3";
+
+/* Dos tipos iniciales. 'fotos' vacío → se muestra una vela dibujada */
+const INICIAL=[
+ {id:1,nombre:"Caja Personajes Navideños",contenido:"Caja x 7 velas",desc:"Mamá Noel, árbol, muñeco de nieve, Papá Noel, Grinch, reno y más. Velas esculpidas y detalladas a mano con acabados dorados. Perfectas para regalar.",precio:75000,tag:"Edición Navidad",disponible:true,fotos:["img/caja-personajes.jpg","img/personajes.jpeg"],color:["#E8B4A0","#9E2A2B"]},
+ {id:2,nombre:"Velas de Deseos · Blancas",contenido:"Caja x 8 velas",desc:"Felicidad, Dinero, Amor, Trabajo, Viajes, Familia, Paz y Salud. Velas blancas con letras doradas para pedir un deseo cada noche.",precio:65000,tag:"Deseos",disponible:true,fotos:["img/caja-blancas.jpg"],color:["#FFF4DD","#E9C16B"]},
+ {id:3,nombre:"Velas de Deseos · Rojo, Verde y Blanco",contenido:"Caja x 8 velas",desc:"Los mismos ocho deseos en los colores de la Navidad: rojo, verde y blanco con detalles dorados.",precio:70000,tag:"Más vendido",disponible:true,fotos:["img/caja-colores.jpg"],color:["#9E2A2B","#1F4D3A"]}
+];
+let datos=cargar();
+function cargar(){try{const s=localStorage.getItem(KEY);return s?JSON.parse(s):structuredClone(INICIAL)}catch(e){return structuredClone(INICIAL)}}
+function guardar(){try{localStorage.setItem(KEY,JSON.stringify(datos));return true}catch(e){toast("No cabe: usa fotos más pequeñas");return false}}
+
+const $=s=>document.querySelector(s);
+const cop=n=>"$"+Number(n).toLocaleString("es-CO");
+const toast=t=>{const e=$("#toast");e.textContent=t;e.classList.add("on");setTimeout(()=>e.classList.remove("on"),2200)};
+let carrito={},cant={},fotoIdx={};
+const visibles=()=>datos.filter(p=>p.disponible);   // ← solo se muestran las disponibles
+
+/* Faroles decorativos */
+const colF=["#9E2A2B","#E0A93B","#1F6B4A","#9E2A2B","#E0A93B"];
+$("#faroles").innerHTML=colF.map(c=>`<div class="farol"><svg viewBox="0 0 30 46"><rect x="10" y="0" width="10" height="5" rx="2" fill="#6b4a2a"/><path d="M6 6h18l4 30H2z" fill="${c}" fill-opacity=".85" stroke="#fff3" /><ellipse cx="15" cy="22" rx="4" ry="7" fill="#fff6c8"/><rect x="5" y="36" width="20" height="6" rx="2" fill="#6b4a2a"/></svg></div>`).join("");
+
+/* Cuenta regresiva */
+function tick(){
+ let d=FECHA-new Date();
+ if(d<=0){$("#cuentaT").textContent="¡Feliz noche de velitas!";$("#cuenta").innerHTML="";return}
+ const dd=Math.floor(d/864e5),h=Math.floor(d/36e5)%24,m=Math.floor(d/6e4)%60,s=Math.floor(d/1e3)%60;
+ $("#cuenta").innerHTML=[[dd,"días"],[h,"horas"],[m,"min"],[s,"seg"]].map(([n,l])=>`<div><b>${String(n).padStart(2,"0")}</b><small>${l}</small></div>`).join("");
+}
+tick();setInterval(tick,1000);
+
+/* Vela dibujada de marcador */
+function velaSVG(c=["#FBE7B5","#E9C16B"],id=0){return `<svg class="ph" viewBox="0 0 100 130"><defs><linearGradient id="v${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${c[0]}"/><stop offset="1" stop-color="${c[1]}"/></linearGradient></defs>
+<path d="M50 4c5 11 15 17 15 30a15 15 0 0 1-30 0C35 21 45 15 50 4z" fill="#FF9B3D"/><path d="M50 21c3 5 8 8 8 13a8 8 0 0 1-16 0c0-5 5-8 8-13z" fill="#fff6c8"/>
+<rect x="49" y="46" width="2" height="10" fill="#3a2a1a"/><rect x="26" y="56" width="48" height="66" rx="6" fill="url(#v${id})"/></svg>`}
+
+/* ===== Catálogo (solo disponibles) ===== */
+function pintarCatalogo(){
+ const l=visibles();
+ $("#productos").innerHTML=l.length?l.map(p=>{
+  const i=(fotoIdx[p.id]||0)%Math.max(1,p.fotos.length),q=cant[p.id]||1,multi=p.fotos.length>1;
+  return `<article class="card"><div class="foto">
+   ${p.fotos.length?`<img src="${p.fotos[i]}" alt="${p.nombre}">`:velaSVG(p.color,p.id)}
+   ${p.tag?`<span class="tag">${p.tag}</span>`:""}
+   ${multi?`<button class="nav-f prev" data-fp="${p.id}">‹</button><button class="nav-f next" data-fn="${p.id}">›</button><div class="dots">${p.fotos.map((_,k)=>`<i class="${k===i?"on":""}"></i>`).join("")}</div>`:""}
+  </div><div class="info"><h3>${p.nombre}</h3><div class="cont">${p.contenido||""}</div><p>${p.desc}</p><div class="precio">${cop(p.precio)}</div>
+  <div class="acciones"><div class="qty"><button data-m="${p.id}">−</button><span>${q}</span><button data-p="${p.id}">+</button></div><button class="add" data-a="${p.id}">Agregar</button></div></div></article>`}).join("")
+  :`<div class="vacio-cat">Muy pronto tendremos velitas disponibles 🕯️</div>`;
+ const bind=(sel,fn)=>document.querySelectorAll(sel).forEach(b=>b.onclick=()=>fn(+Object.values(b.dataset)[0]));
+ bind("[data-m]",i=>{cant[i]=Math.max(1,(cant[i]||1)-1);pintarCatalogo()});
+ bind("[data-p]",i=>{cant[i]=(cant[i]||1)+1;pintarCatalogo()});
+ bind("[data-a]",i=>{carrito[i]=(carrito[i]||0)+(cant[i]||1);cant[i]=1;pintarCatalogo();pintarCarrito();abrir("#drawer")});
+ bind("[data-fn]",i=>{fotoIdx[i]=(fotoIdx[i]||0)+1;pintarCatalogo()});
+ bind("[data-fp]",i=>{const n=datos.find(p=>p.id===i).fotos.length;fotoIdx[i]=((fotoIdx[i]||0)-1+n)%n;pintarCatalogo()});
+}
+
+/* ===== Carrito ===== */
+const precioDe=i=>datos.find(p=>p.id==i)?.precio||0;
+function pintarCarrito(){
+ Object.keys(carrito).forEach(i=>{const p=datos.find(x=>x.id==i);if(!p||!p.disponible)delete carrito[i]});
+ const ids=Object.keys(carrito),n=ids.reduce((s,i)=>s+carrito[i],0),t=ids.reduce((s,i)=>s+carrito[i]*precioDe(i),0);
+ $("#cnt").textContent=n;$("#total").textContent=cop(t);$("#pedir").disabled=!n;
+ $("#items").innerHTML=n?ids.map(i=>{const p=datos.find(x=>x.id==i);return `<div class="item"><div><b>${carrito[i]} × ${p.nombre}</b><small>${cop(p.precio)} c/u · <a href="#" data-q="${i}" style="color:var(--oro)">quitar</a></small></div><b>${cop(carrito[i]*p.precio)}</b></div>`}).join(""):`<div class="vacio">Aún no has agregado velitas 🕯️</div>`;
+ document.querySelectorAll("[data-q]").forEach(a=>a.onclick=e=>{e.preventDefault();delete carrito[a.dataset.q];pintarCarrito()});
+}
+function mensaje(){
+ const ids=Object.keys(carrito),t=ids.reduce((s,i)=>s+carrito[i]*precioDe(i),0);
+ const lin=ids.map(i=>{const p=datos.find(x=>x.id==i);return `• ${carrito[i]} × ${p.nombre} (${p.contenido}) — ${cop(carrito[i]*p.precio)}`}).join("\n");
+ return `Hola 🕯️, quiero hacer un pedido para el Día de las Velitas en ${MARCA}:\n${lin}\n*Total: ${cop(t)}*\nNombre: ${$("#nombre").value||"—"}\nCiudad/barrio: ${$("#ciudad").value||"—"}`;
+}
+$("#pedir").onclick=()=>window.open(`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(mensaje())}`,"_blank");
+$("#waFlot").href=`https://wa.me/${WHATSAPP}?text=${encodeURIComponent("Hola 🕯️, quiero información de las velitas del 7 de diciembre")}`;
+
+/* Paneles */
+function abrir(id){$(id).classList.add("on");$("#overlay").classList.add("on")}
+function cerrar(){document.querySelectorAll(".drawer").forEach(d=>d.classList.remove("on"));$("#overlay").classList.remove("on")}
+$("#abrirCarrito").onclick=()=>abrir("#drawer");
+document.querySelectorAll("[data-cerrar]").forEach(b=>b.onclick=cerrar);$("#overlay").onclick=cerrar;
+
+/* ===== ADMIN ===== */
+let autenticado=false;
+$("#abrirAdmin").onclick=()=>{
+ if(!autenticado){const c=prompt("Contraseña de administrador:");if(c!==CLAVE){if(c!==null)toast("Contraseña incorrecta");return}autenticado=true}
+ admLista();abrir("#admin");
+};
+function admLista(){
+ $("#admT").textContent="Administrar velitas";
+ $("#admBody").innerHTML=`<div class="nota">Solo las velitas marcadas como <b>Disponible</b> se ven en la página. Las demás quedan guardadas y ocultas hasta que las actives.</div>
+ <button class="btn-add" id="nuevo">＋ Agregar otro tipo de velita</button>
+ ${datos.map(p=>`<div class="arow"><div class="mini" style="background-image:url('${p.fotos[0]||""}')">${p.fotos[0]?"":"🕯️"}</div>
+  <div class="t"><b>${p.nombre}</b><small>${cop(p.precio)} · ${p.fotos.length} foto(s)</small></div>
+  <span class="estado ${p.disponible?"si":"no"}">${p.disponible?"Visible":"Oculta"}</span>
+  <button class="sm" data-tg="${p.id}">${p.disponible?"Ocultar":"Mostrar"}</button><button class="sm" data-ed="${p.id}">Editar</button></div>`).join("")}`;
+ $("#nuevo").onclick=()=>admForm(null);
+ document.querySelectorAll("[data-tg]").forEach(b=>b.onclick=()=>{const p=datos.find(x=>x.id==b.dataset.tg);p.disponible=!p.disponible;guardar();admLista();pintarCatalogo();pintarCarrito()});
+ document.querySelectorAll("[data-ed]").forEach(b=>b.onclick=()=>admForm(+b.dataset.ed));
+}
+function admForm(id){
+ const nuevo=id===null;
+ const p=nuevo?{id:Date.now(),nombre:"",contenido:"Paquete x 20 unidades",desc:"",precio:"",tag:"",disponible:false,fotos:[],color:["#FBE7B5","#E9C16B"]}:structuredClone(datos.find(x=>x.id===id));
+ $("#admT").textContent=nuevo?"Nuevo tipo de velita":"Editar velita";
+ const pintar=()=>{
+  $("#admBody").innerHTML=`<div class="f">
+   <label>Nombre<input id="fn" value="${p.nombre}" placeholder="Ej: Velitas aromáticas"></label>
+   <div class="dos"><label>Contenido del paquete<input id="fc" value="${p.contenido}"></label><label>Precio (COP)<input id="fp" type="number" value="${p.precio}" placeholder="15000"></label></div>
+   <label>Descripción<textarea id="fd" rows="3">${p.desc}</textarea></label>
+   <label>Etiqueta (opcional)<input id="ft" value="${p.tag}" placeholder="Nuevo, Más vendido…"></label>
+   <label>Fotos (máx. 4)<div class="fotos">${p.fotos.map((f,k)=>`<div class="ft" style="background-image:url('${f}')"><button data-rm="${k}">×</button></div>`).join("")}${p.fotos.length<4?`<button class="subir" id="subir">＋</button>`:""}</div></label>
+   <input type="file" id="file" accept="image/*" multiple hidden>
+   <label class="sw"><input type="checkbox" id="fv" ${p.disponible?"checked":""}> Disponible (mostrar en la página)</label>
+   <div class="acc2"><button class="cancelar" id="cn">Cancelar</button><button class="guardar" id="gd">Guardar</button></div>
+   ${nuevo?"":`<button class="sm del" id="el" style="margin-top:6px">Eliminar este tipo</button>`}</div>`;
+  const leer=()=>{p.nombre=$("#fn").value;p.contenido=$("#fc").value;p.precio=$("#fp").value;p.desc=$("#fd").value;p.tag=$("#ft").value;p.disponible=$("#fv").checked};
+  $("#subir")&&($("#subir").onclick=()=>$("#file").click());
+  $("#file").onchange=async e=>{leer();for(const f of [...e.target.files].slice(0,4-p.fotos.length))p.fotos.push(await reducir(f));pintar()};
+  document.querySelectorAll("[data-rm]").forEach(b=>b.onclick=()=>{leer();p.fotos.splice(+b.dataset.rm,1);pintar()});
+  $("#cn").onclick=admLista;
+  $("#gd").onclick=()=>{leer();
+   if(!p.nombre.trim()||!p.precio){toast("Falta el nombre o el precio");return}
+   p.precio=+p.precio;
+   if(nuevo)datos.push(p);else datos[datos.findIndex(x=>x.id===id)]=p;
+   if(guardar()){toast("Guardado ✔");admLista();pintarCatalogo();pintarCarrito()}};
+  $("#el")&&($("#el").onclick=()=>{if(confirm("¿Eliminar este tipo de velita?")){datos=datos.filter(x=>x.id!==id);guardar();admLista();pintarCatalogo();pintarCarrito()}});
+ };pintar();
+}
+/* Reduce la foto a máx. 900 px para que pese poco */
+function reducir(file){return new Promise(res=>{const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const k=Math.min(1,900/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=im.width*k;c.height=im.height*k;c.getContext("2d").drawImage(im,0,0,c.width,c.height);res(c.toDataURL("image/jpeg",.8))};im.src=r.result};r.readAsDataURL(file)})}
+
+pintarCatalogo();pintarCarrito();
+</script>
+</body>
+</html>

@@ -228,7 +228,7 @@ footer .logo{justify-content:center;margin-bottom:8px}
   <div class="logo"><img class="avatar" src="img/logo.jpg" alt="" onerror="this.style.display='none'">La Gata Siamesa</div>
   <p>Velas artesanales para el 7 de diciembre · Tu ciudad, Colombia</p>
   <div class="redes"><a href="https://wa.me/573133827165" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.instagram.com/la.gata.siamesa" target="_blank" rel="noopener">@la.gata.siamesa</a></div>
-  <p style="opacity:.4;font-size:.75rem;margin-top:10px">versión 2026-11-11 v7</p>
+  <p style="opacity:.4;font-size:.75rem;margin-top:10px">versión 2026-11-11 v8</p>
   <button class="admin-link" id="abrirAdmin">Administrar</button>
  </div>
 </footer>
@@ -348,9 +348,9 @@ setInterval(validarPedido,500);                    // detecta también el autoco
 function mensaje(){
  const ids=Object.keys(carrito),t=ids.reduce((s,i)=>s+carrito[i]*precioDe(i),0);
  const lin=ids.map(i=>{const p=datos.find(x=>x.id==i);return `• ${carrito[i]} × ${p.nombre} (${p.contenido}) — ${cop(carrito[i]*p.precio)}`}).join("\n");
- return `Hola 🕯️, quiero hacer un pedido para el Día de las Velitas en ${MARCA}:\n${lin}\n*Total: ${cop(t)}*\n\n*Datos de entrega*\nNombre: ${$("#nombre").value.trim()}\nCiudad: ${$("#ciudad").value.trim()}\nBarrio: ${$("#barrio").value.trim()}\nDirección: ${$("#direccion").value.trim()}`;
+ return `Hola, quiero hacer un pedido para el Día de las Velitas en ${MARCA}:\n${lin}\n*Total: ${cop(t)}*\n\n*Datos de entrega*\nNombre: ${$("#nombre").value.trim()}\nCiudad: ${$("#ciudad").value.trim()}\nBarrio: ${$("#barrio").value.trim()}\nDirección: ${$("#direccion").value.trim()}`;
 }
-$("#waFlot").href=`https://wa.me/${WHATSAPP}?text=${encodeURIComponent("Hola 🕯️, quiero información de las velitas del 7 de diciembre")}`;
+$("#waFlot").href=`https://wa.me/${WHATSAPP}?text=${encodeURIComponent("Hola, quiero información de las velitas del 7 de diciembre")}`;
 
 /* Paneles */
 function abrir(id){$(id).classList.add("on");$("#overlay").classList.add("on")}

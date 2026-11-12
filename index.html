@@ -228,7 +228,7 @@ footer .logo{justify-content:center;margin-bottom:8px}
   <div class="logo"><img class="avatar" src="img/logo.jpg" alt="" onerror="this.style.display='none'">La Gata Siamesa</div>
   <p>Velas artesanales para el 7 de diciembre · Tu ciudad, Colombia</p>
   <div class="redes"><a href="https://wa.me/573133827165" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.instagram.com/la.gata.siamesa" target="_blank" rel="noopener">@la.gata.siamesa</a></div>
-  <p style="opacity:.4;font-size:.75rem;margin-top:10px">versión 2026-11-11 v6</p>
+  <p style="opacity:.4;font-size:.75rem;margin-top:10px">versión 2026-11-11 v7</p>
   <button class="admin-link" id="abrirAdmin">Administrar</button>
  </div>
 </footer>
@@ -248,7 +248,7 @@ footer .logo{justify-content:center;margin-bottom:8px}
   <input id="barrio" placeholder="Barrio">
   <input id="direccion" placeholder="Dirección (calle / carrera, casa o apto)" autocomplete="street-address">
   <div id="ayuda" style="font-size:.82rem;color:var(--oro);min-height:1.2em"></div>
-  <a class="pedir" id="pedir" href="#" target="_blank" rel="noopener" style="display:none;text-align:center;text-decoration:none">💬 Pedir por WhatsApp</a>
+  <a class="pedir" id="btnPedir" href="#" target="_blank" rel="noopener" style="display:none;text-align:center;text-decoration:none">💬 Pedir por WhatsApp</a>
  </div>
 </aside>
 
@@ -338,7 +338,7 @@ function validarPedido(){
  const faltan=[["nombre","tu nombre"],["ciudad","la ciudad"],["barrio","el barrio"],["direccion","la dirección"]].filter(([id])=>!$("#"+id).value.trim()).map(([,t])=>t);
  const listo=n>0&&!faltan.length;
  $("#ayuda").textContent=!n?"Agrega al menos una caja a tu pedido.":faltan.length?"Para pedir, completa: "+faltan.join(", ")+".":"";
- const b=$("#pedir");
+ const b=$("#btnPedir");
  b.style.display=listo?"block":"none";            // el botón solo aparece con el pedido y los 4 datos completos
  if(listo)b.href=`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(mensaje())}`;   // enlace directo a WhatsApp
  return !listo;

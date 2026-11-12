@@ -223,7 +223,7 @@ footer .logo{justify-content:center;margin-bottom:8px}
  <div class="wrap">
   <div class="logo"><img class="avatar" src="img/logo.jpg" alt="" onerror="this.style.display='none'">La Gata Siamesa</div>
   <p>Velas artesanales para el 7 de diciembre · Tu ciudad, Colombia</p>
-  <div class="redes"><a href="#">WhatsApp</a><a href="https://www.instagram.com/la.gata.siamesa" target="_blank" rel="noopener">@la.gata.siamesa</a></div>
+  <div class="redes"><a href="https://wa.me/573133827165" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.instagram.com/la.gata.siamesa" target="_blank" rel="noopener">@la.gata.siamesa</a></div>
   <button class="admin-link" id="abrirAdmin">Administrar</button>
  </div>
 </footer>
@@ -251,19 +251,24 @@ footer .logo{justify-content:center;margin-bottom:8px}
 
 <script>
 /* ===== CONFIG (luego saldrá del panel) ===== */
-const WHATSAPP="573133827165", MARCA="La Gata Siamesa", CLAVE="velitas";
+const WHATSAPP="573133827165", MARCA="La Gata Siamesa";
+const API="https://script.google.com/macros/s/AKfycbwaIVDAksGsho-pCaS9QVZgdPFuLuM9f3G7rQ9qrD5fyosgexGlaDr6PtxRApG5CnX0Bg/exec";
 const FECHA=new Date("2026-12-07T18:00:00-05:00");
-const KEY="velitas_v3";
+const CACHE="velitas_cache";
 
-/* Dos tipos iniciales. 'fotos' vacío → se muestra una vela dibujada */
-const INICIAL=[
- {id:1,nombre:"Caja Personajes Navideños",contenido:"Caja x 7 velas",desc:"Mamá Noel, árbol, muñeco de nieve, Papá Noel, Grinch, reno y más. Velas esculpidas y detalladas a mano con acabados dorados. Perfectas para regalar.",precio:75000,tag:"Edición Navidad",disponible:true,fotos:["img/caja-personajes.jpg","img/personajes.jpeg"],color:["#E8B4A0","#9E2A2B"]},
- {id:2,nombre:"Velas de Deseos · Blancas",contenido:"Caja x 8 velas",desc:"Felicidad, Dinero, Amor, Trabajo, Viajes, Familia, Paz y Salud. Velas blancas con letras doradas para pedir un deseo cada noche.",precio:65000,tag:"Deseos",disponible:true,fotos:["img/caja-blancas.jpg"],color:["#FFF4DD","#E9C16B"]},
- {id:3,nombre:"Velas de Deseos · Rojo, Verde y Blanco",contenido:"Caja x 8 velas",desc:"Los mismos ocho deseos en los colores de la Navidad: rojo, verde y blanco con detalles dorados.",precio:70000,tag:"Más vendido",disponible:true,fotos:["img/caja-colores.jpg"],color:["#9E2A2B","#1F4D3A"]}
-];
-let datos=cargar();
-function cargar(){try{const s=localStorage.getItem(KEY);return s?JSON.parse(s):structuredClone(INICIAL)}catch(e){return structuredClone(INICIAL)}}
-function guardar(){try{localStorage.setItem(KEY,JSON.stringify(datos));return true}catch(e){toast("No cabe: usa fotos más pequeñas");return false}}
+/* Los productos viven en Google Sheets; la página los lee desde la API.
+   La clave de administrador NO está en este archivo: se pide al abrir el panel y solo se guarda en memoria. */
+let datos=[],cargando=true,CLAVE="";
+function enCache(){try{return JSON.parse(localStorage.getItem(CACHE)||"[]")}catch(e){return[]}}
+async function cargarCatalogo(){
+ datos=enCache();pintarCatalogo();pintarCarrito();          // muestra lo último visto mientras carga
+ try{const r=await fetch(API),j=await r.json();if(j.ok){datos=j.productos;try{localStorage.setItem(CACHE,JSON.stringify(datos))}catch(e){}}}catch(e){}
+ cargando=false;pintarCatalogo();pintarCarrito();
+}
+async function api(accion,extra={}){
+ const r=await fetch(API,{method:"POST",body:JSON.stringify({clave:CLAVE,accion,...extra})});
+ return r.json();
+}
 
 const $=s=>document.querySelector(s);
 const cop=n=>"$"+Number(n).toLocaleString("es-CO");
@@ -300,7 +305,7 @@ function pintarCatalogo(){
    ${multi?`<button class="nav-f prev" data-fp="${p.id}">‹</button><button class="nav-f next" data-fn="${p.id}">›</button><div class="dots">${p.fotos.map((_,k)=>`<i class="${k===i?"on":""}"></i>`).join("")}</div>`:""}
   </div><div class="info"><h3>${p.nombre}</h3><div class="cont">${p.contenido||""}</div><p>${p.desc}</p><div class="precio">${cop(p.precio)}</div>
   <div class="acciones"><div class="qty"><button data-m="${p.id}">−</button><span>${q}</span><button data-p="${p.id}">+</button></div><button class="add" data-a="${p.id}">Agregar</button></div></div></article>`}).join("")
-  :`<div class="vacio-cat">Muy pronto tendremos velitas disponibles 🕯️</div>`;
+  :`<div class="vacio-cat">${cargando?"Cargando velas…":"Muy pronto tendremos velas disponibles 🕯️"}</div>`;
  const bind=(sel,fn)=>document.querySelectorAll(sel).forEach(b=>b.onclick=()=>fn(+Object.values(b.dataset)[0]));
  bind("[data-m]",i=>{cant[i]=Math.max(1,(cant[i]||1)-1);pintarCatalogo()});
  bind("[data-p]",i=>{cant[i]=(cant[i]||1)+1;pintarCatalogo()});
@@ -333,10 +338,12 @@ $("#abrirCarrito").onclick=()=>abrir("#drawer");
 document.querySelectorAll("[data-cerrar]").forEach(b=>b.onclick=cerrar);$("#overlay").onclick=cerrar;
 
 /* ===== ADMIN ===== */
-let autenticado=false;
-$("#abrirAdmin").onclick=()=>{
- if(!autenticado){const c=prompt("Contraseña de administrador:");if(c!==CLAVE){if(c!==null)toast("Contraseña incorrecta");return}autenticado=true}
- admLista();abrir("#admin");
+$("#abrirAdmin").onclick=async()=>{
+ if(!CLAVE){const c=prompt("Contraseña de administrador:");if(!c)return;CLAVE=c}
+ toast("Verificando…");
+ let r;try{r=await api("listar")}catch(e){r={ok:false,error:"No se pudo conectar"}}
+ if(!r.ok){CLAVE="";toast(r.error||"Error");return}
+ datos=r.productos;admLista();abrir("#admin");
 };
 function admLista(){
  $("#admT").textContent="Administrar velitas";
@@ -347,7 +354,10 @@ function admLista(){
   <span class="estado ${p.disponible?"si":"no"}">${p.disponible?"Visible":"Oculta"}</span>
   <button class="sm" data-tg="${p.id}">${p.disponible?"Ocultar":"Mostrar"}</button><button class="sm" data-ed="${p.id}">Editar</button></div>`).join("")}`;
  $("#nuevo").onclick=()=>admForm(null);
- document.querySelectorAll("[data-tg]").forEach(b=>b.onclick=()=>{const p=datos.find(x=>x.id==b.dataset.tg);p.disponible=!p.disponible;guardar();admLista();pintarCatalogo();pintarCarrito()});
+ document.querySelectorAll("[data-tg]").forEach(b=>b.onclick=async()=>{const p=datos.find(x=>x.id==b.dataset.tg);p.disponible=!p.disponible;
+  const r=await api("guardar",{producto:p}).catch(()=>({ok:false}));
+  if(!r.ok){p.disponible=!p.disponible;toast("No se pudo guardar");return}
+  admLista();pintarCatalogo();pintarCarrito()});
  document.querySelectorAll("[data-ed]").forEach(b=>b.onclick=()=>admForm(+b.dataset.ed));
 }
 function admForm(id){
@@ -367,21 +377,30 @@ function admForm(id){
    ${nuevo?"":`<button class="sm del" id="el" style="margin-top:6px">Eliminar este tipo</button>`}</div>`;
   const leer=()=>{p.nombre=$("#fn").value;p.contenido=$("#fc").value;p.precio=$("#fp").value;p.desc=$("#fd").value;p.tag=$("#ft").value;p.disponible=$("#fv").checked};
   $("#subir")&&($("#subir").onclick=()=>$("#file").click());
-  $("#file").onchange=async e=>{leer();for(const f of [...e.target.files].slice(0,4-p.fotos.length))p.fotos.push(await reducir(f));pintar()};
+  $("#file").onchange=async e=>{leer();toast("Subiendo foto…");
+   for(const f of [...e.target.files].slice(0,4-p.fotos.length)){
+    const r=await api("foto",{dataUrl:await reducir(f)}).catch(()=>({ok:false,error:"Error de conexión"}));
+    if(r.ok)p.fotos.push(r.url);else toast(r.error||"No se pudo subir")}
+   pintar()};
   document.querySelectorAll("[data-rm]").forEach(b=>b.onclick=()=>{leer();p.fotos.splice(+b.dataset.rm,1);pintar()});
   $("#cn").onclick=admLista;
-  $("#gd").onclick=()=>{leer();
+  $("#gd").onclick=async()=>{leer();
    if(!p.nombre.trim()||!p.precio){toast("Falta el nombre o el precio");return}
-   p.precio=+p.precio;
+   p.precio=+p.precio;toast("Guardando…");
+   const r=await api("guardar",{producto:p}).catch(()=>({ok:false}));
+   if(!r.ok){toast(r.error||"No se pudo guardar");return}
    if(nuevo)datos.push(p);else datos[datos.findIndex(x=>x.id===id)]=p;
-   if(guardar()){toast("Guardado ✔");admLista();pintarCatalogo();pintarCarrito()}};
-  $("#el")&&($("#el").onclick=()=>{if(confirm("¿Eliminar este tipo de velita?")){datos=datos.filter(x=>x.id!==id);guardar();admLista();pintarCatalogo();pintarCarrito()}});
+   toast("Guardado ✔");admLista();pintarCatalogo();pintarCarrito()};
+  $("#el")&&($("#el").onclick=async()=>{if(!confirm("¿Eliminar este tipo de velita?"))return;
+   const r=await api("eliminar",{id}).catch(()=>({ok:false}));
+   if(!r.ok){toast("No se pudo eliminar");return}
+   datos=datos.filter(x=>x.id!==id);admLista();pintarCatalogo();pintarCarrito()});
  };pintar();
 }
 /* Reduce la foto a máx. 900 px para que pese poco */
 function reducir(file){return new Promise(res=>{const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const k=Math.min(1,900/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=im.width*k;c.height=im.height*k;c.getContext("2d").drawImage(im,0,0,c.width,c.height);res(c.toDataURL("image/jpeg",.8))};im.src=r.result};r.readAsDataURL(file)})}
 
-pintarCatalogo();pintarCarrito();
+cargarCatalogo();
 </script>
 </body>
 </html>
